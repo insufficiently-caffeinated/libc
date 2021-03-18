@@ -62,10 +62,10 @@ list(APPEND CFLAGS_ALL
 include(MuslGenerated)
 
 # Need a dummy C file to make the target work
-file(WRITE "${CMAKE_BINARY_DIR}/dummy.c" "")
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/dummy.c" "")
 
 # Overall libc target
-add_llvm_ir_library(${PREFIX}libc "${CMAKE_BINARY_DIR}/dummy.c")
+add_llvm_ir_library(${PREFIX}libc "${CMAKE_CURRENT_BINARY_DIR}/dummy.c")
 target_include_directories(${PREFIX}libc INTERFACE include)
 
 # Source directories that we are currently able to build
@@ -95,10 +95,10 @@ foreach(dir ${source_dirs})
   target_include_directories(${target} 
     PRIVATE arch/${MUSL_ARCH}
     PRIVATE arch/generic
-    PRIVATE "${CMAKE_BINARY_DIR}/include/internal"
+    PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include/internal"
     PRIVATE src/include
     PRIVATE src/internal
-    PRIVATE "${CMAKE_BINARY_DIR}/include"
+    PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include"
   )
   target_include_directories(${target} PUBLIC include)
 

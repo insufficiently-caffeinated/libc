@@ -65,8 +65,8 @@ include(MuslGenerated)
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/dummy.c" "")
 
 # Overall libc target
-add_llvm_ir_library(${PREFIX}libc "${CMAKE_CURRENT_BINARY_DIR}/dummy.c")
-target_include_directories(${PREFIX}libc INTERFACE include)
+llvm_library(${PREFIX}libc "${CMAKE_CURRENT_BINARY_DIR}/dummy.c")
+llvm_include_directories(${PREFIX}libc INTERFACE include)
 
 # Source directories that we are currently able to build
 set(source_dirs
@@ -89,25 +89,25 @@ foreach(dir ${source_dirs})
 
   set(target ${PREFIX}${dir})
 
-  add_llvm_ir_library(${target} "${sources}")
+  llvm_library(${target} "${sources}")
 
   # Note: order matters here!
-  target_include_directories(${target} 
-    PRIVATE arch/${MUSL_ARCH}
-    PRIVATE arch/generic
+  llvm_include_directories(${target} 
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/arch/${MUSL_ARCH}"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/arch/generic"
     PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include/internal"
-    PRIVATE src/include
-    PRIVATE src/internal
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/include"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/internal"
     PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include"
   )
-  target_include_directories(${target} PUBLIC include)
+  llvm_include_directories(${target} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-  target_compile_options(${target} PRIVATE ${CFLAGS_ALL})
+  llvm_compile_options(${target} PRIVATE ${CFLAGS_ALL})
 
   add_dependencies(${target} ${PREFIX}generated-files)
 
   # libc target includes all libraries
-  target_link_libraries(${PREFIX}libc PRIVATE ${PREFIX}${dir})
+  llvm_link_libraries(${PREFIX}libc PRIVATE ${PREFIX}${dir})
 endforeach()
 
 
